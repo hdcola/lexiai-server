@@ -3,16 +3,17 @@ import datetime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from pymongo import MongoClient
-from django.conf import settings
 
 mongo_uri = os.getenv('MONGO_URI')
+db_name = os.getenv('DB_NAME')
 
 client = MongoClient(mongo_uri)
-db = client['DB_NAME']
+db = client[db_name]
 users_collection = db['users']
 
+
 @api_view(['POST'])
-def create_user(request):
+def register_user(request):
     data = request.data
 
     user_data = {
@@ -24,5 +25,13 @@ def create_user(request):
 
     users_collection.insert_one(user_data)
 
-    return Response({'message': 'User created successfully'})
+    return Response({'message': 'User registered successfully'})
 
+
+@api_view(['POST'])
+def test_user(request):
+    data = datetime.datetime.now()
+
+   
+
+    return Response({'message': 'User registered successfully'}, data)
