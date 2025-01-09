@@ -26,12 +26,3 @@ def register_user(request):
     users_collection.insert_one(user_data)
 
     return Response({'message': 'User registered successfully'})
-
-
-@api_view(['POST'])
-def test_user(request):
-    data = datetime.datetime.now()
-
-   
-
-    return Response({'message': 'User registered successfully'}, data)
