@@ -1,0 +1,14 @@
+@host=http://127.0.0.1:8000/
+
+### register
+
+POST {{host}}/api/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "test3",
+    "email" : "test3@mail.com",
+    "password" : "testpassword"
+}
+
+
