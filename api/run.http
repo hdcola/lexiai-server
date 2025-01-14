@@ -1,4 +1,4 @@
-@host=http://127.0.0.1:8000/
+@host=http://127.0.0.1:8000
 
 ### register
 
@@ -11,4 +11,12 @@ Content-Type: application/json
     "password" : "testpassword"
 }
 
+### get all AI styles
+GET {{host}}/api/styles HTTP/1.1
 
+
+### get all languages
+GET {{host}}/api/languages HTTP/1.1
+
+### get all topics for specific language and level
+GET {{host}}/api/topics?languageId=678557da79bc79eeab784fe4&level=Beginner HTTP/1.1
