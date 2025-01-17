@@ -5,10 +5,13 @@ description = "LexiAI Server"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "bcrypt>=4.2.1",
     "django>=5.1.5",
     "django-cors-headers>=4.6.0",
     "djangorestframework>=3.15.2",
     "dnspython>=2.7.0",
+    "gunicorn>=23.0.0",
+    "pyjwt>=2.10.1",
     "pymongo>=4.10.1",
     "python-dotenv>=1.0.1",
 ]
