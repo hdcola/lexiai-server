@@ -6,9 +6,18 @@ POST {{host}}/api/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "username": "test3",
-    "email" : "test3@mail.com",
-    "password" : "testpassword"
+    "username": "anna",
+    "email" : "anna@mail.com",
+    "password" : "Aa123#"
+}
+
+### login
+POST {{host}}/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "anna@mail.com",
+    "password" : "Aa123#"
 }
 
 ### get all AI styles
