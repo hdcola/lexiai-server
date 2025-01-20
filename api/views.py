@@ -5,6 +5,7 @@ from bson import ObjectId, json_util
 import datetime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from pymongo import MongoClient
 import bcrypt
 import jwt 
@@ -69,8 +70,8 @@ def login_user(request):
 
                 payload = {
                     'email': logged_user['email'],
-                    'id': str(logged_user['_id'])  # convert ObjectId to string
-                    # add expiration
+                    'id': str(logged_user['_id']),  # convert ObjectId to string                    
+                    'exp': datetime.datetime.now() + datetime.timedelta(days=1),  # 1-day expiration
                 }
                 access_token = jwt.encode(payload, token_key, algorithm='HS256')
 
@@ -129,3 +130,28 @@ def get_topics_for_level(request):
 # helper function to parse JSON
 def parse_json(data):
     return json.loads(json_util.dumps(data))
+
+
+# validate JWT
+@api_view(['GET'])
+def validate_jwt(request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return Response({"error": "Authorization header missing or invalid."}, status=status.HTTP_400_BAD_REQUEST)
+
+    token = auth_header.split(" ")[1]
+
+    try:
+        decoded_token = jwt.decode(token, token_key, algorithms=['HS256'])
+        logging.info(f"Decoded JWT: {decoded_token}")
+        # verify if user exists
+        user = users_collection.find_one({"_id": ObjectId(decoded_token['id']), "email": decoded_token['email']})
+        if not user:
+            return Response({"error": "Invalid token: User does not exist."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"message": "Token is valid.", "decoded_token": decoded_token}, status=status.HTTP_200_OK)
+
+    except jwt.ExpiredSignatureError:
+         return Response({"error": "Token has expired."}, status=status.HTTP_401_UNAUTHORIZED)
+    except jwt.InvalidTokenError as e:
+        logging.error("Invalid token: %s", e)
+        return Response({"error": "Invalid token."}, status=status.HTTP_401_UNAUTHORIZED)
