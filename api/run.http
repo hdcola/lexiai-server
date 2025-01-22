@@ -62,3 +62,19 @@ Authorization: Bearer {{accessToken}}
     "level": "Advanced"
   }
 }
+
+### get user's favorities
+GET {{host}}/api/users/favorites HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### add user's favorities
+PATCH {{host}}/api/users/favorites HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "favorites": {
+    "67855a2179bc79eeab784fef": false
+  }
+}
