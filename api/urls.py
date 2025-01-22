@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .settings.views import SettingsView
+from .favorites.views import FavoritesView
 from .views import register_user, login_user, get_all_languages, get_topics_for_level, get_all_ai_styles, validate_jwt
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('topics', get_topics_for_level, name='get_topics_for_level'),
     path('styles', get_all_ai_styles, name='get_all_ai_styles'),
     path('users/settings', SettingsView.as_view(), name='settings'),
+    path('users/favorites', FavoritesView.as_view(), name='favorites'),
 ]
