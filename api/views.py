@@ -73,10 +73,11 @@ def login_user(request):
                 logged_user['_id'] = str(logged_user['_id'])
                 # remove password from the response
                 del logged_user['password']
+                logged_user['_id'] = str(logged_user['_id'])
 
                 payload = {
                     # convert ObjectId to string
-                    'user_id': str(logged_user['_id']),
+                    'user_id': logged_user['_id'],
                     'username': logged_user['username'],
                     'email': logged_user['email'],
                 }
@@ -86,6 +87,7 @@ def login_user(request):
                 return Response({
                     "message": "Login successful",
                     "accessToken": access_token,
+                    "user": logged_user,
                 }, status=200)
             else:
                 return Response({"message": "Invalid credentials"}, status=401)
@@ -164,7 +166,10 @@ def validate_jwt(request):
         user = users_collection.find_one({"_id": ObjectId(user_id)})
         if not user:
             return Response({"error": "Invalid token: User does not exist."}, status=401)
-        return Response({"message": "Token is valid.", "decoded_token": decoded_token}, status=200)
+        
+        del user['password']
+        user['_id'] = str(user['_id'])
+        return Response({"message": "Token is valid.", "user": user}, status=200)
     except jwt.InvalidTokenError as e:
         logging.error("Invalid token: %s", e)
         return Response({"error": "Invalid token."}, status=401)
