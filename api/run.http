@@ -75,6 +75,6 @@ Authorization: Bearer {{accessToken}}
 
 {
   "favorites": {
-    "67855a2179bc79eeab784fef": false
+    "6787e6958c00c6bd30315c84": true
   }
 }

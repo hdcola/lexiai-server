@@ -1,4 +1,5 @@
-from bson import ObjectId
+import json
+from bson import ObjectId, json_util
 from pymongo import MongoClient
 import os
 from rest_framework.views import APIView
@@ -13,6 +14,7 @@ db_name = os.getenv('DB_NAME')
 client = MongoClient(mongo_uri)
 db = client[db_name]
 users_collection = db['users']
+topics_collection = db['topics']
 
 
 class FavoritesView(APIView):
@@ -34,7 +36,17 @@ class FavoritesView(APIView):
             if settings is not None:
                 favorites = settings.get('favorites', None)
                 if favorites is not None:
-                    return Response({"favorites": favorites}, status=200)
+                    topics = []
+                    for key, value in favorites.items():
+                        if value:
+                            # retrieve the topic from the database
+                            topic = topics_collection.find_one(
+                                {"_id": ObjectId(key)})
+                            if topic:
+                                # add the topic to the favorites
+                                topics.append(topic)
+
+                    return Response({"favorites": parse_json(topics)}, status=200)
 
             return Response({"favorites": "{}"}, status=200)
 
@@ -73,3 +85,7 @@ class FavoritesView(APIView):
             return Response({"favorites": favorites}, status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
