@@ -36,9 +36,6 @@ django-cors-headers==4.6.0 \
 djangorestframework==3.15.2 \
     --hash=sha256:2b8871b062ba1aefc2de01f773875441a961fefbf79f5eed1e32b2f096944b20 \
     --hash=sha256:36fe88cd2d6c6bec23dca9804bab2ba5517a8bb9d8f47ebc68981b56840107ad
-djongo5==1.3.9 \
-    --hash=sha256:13f8a38723718ba7b5840905414d6df94ddfc0f0f0a72f61aaf005c19f3fdec4 \
-    --hash=sha256:b593931d5b712d90ef7bb42b6b4cbdc404e3db37e665264cbe7e56121474e268
 dnspython==2.7.0 \
     --hash=sha256:b4c34b7d10b51bcc3a5071e7b8dee77939f1e878477eeecc965e9835f63c6c86 \
     --hash=sha256:ce9c432eda0dc91cf618a5cedf1a4e142651196bbcd2c80e89ed5a907e5cfaf1
