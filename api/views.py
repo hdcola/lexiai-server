@@ -69,15 +69,14 @@ def login_user(request):
                 del logged_user['password']  # remove password from the response
 
                 payload = {
+                    'user_id': str(logged_user['_id']),  # convert ObjectId to string  
+                    'username': logged_user['username'],
                     'email': logged_user['email'],
-                    'id': str(logged_user['_id']),  # convert ObjectId to string                    
-                    'exp': datetime.datetime.now() + datetime.timedelta(days=1),  # 1-day expiration
                 }
                 access_token = jwt.encode(payload, token_key, algorithm='HS256')
 
                 return Response({
                     "message": "Login successful",
-                    "user": logged_user,
                     "accessToken": access_token,
                 }, status=200)
             else:
@@ -90,8 +89,37 @@ def login_user(request):
     except Exception as e:
         logging.exception("Error occurred during login: %s", e)
         return Response({"error": "Error logging in"}, status=500)
-    
 
+
+# get user settings data
+@api_view(['GET'])
+def get_user_settings(request):
+    try:        
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return Response({"error": "Authorization header missing or invalid."}, status=status.HTTP_400_BAD_REQUEST)
+
+        token = auth_header.split(" ")[1]
+        decoded_token = jwt.decode(token, token_key, algorithms=['HS256'])
+        logging.info(f"Decoded JWT: {decoded_token}")
+
+        user_id = decoded_token.get('user_id')
+        if not user_id:
+            return Response({"error": "Invalid token: User ID missing."}, status=400)
+        
+        # verify if user exists
+        user = users_collection.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            return Response({"error": "Invalid token: User does not exist."}, status=401)
+        
+        settings = user.get('settings', None)  # safely retrieve the `settings` field
+        if settings is not None:
+            return Response({"settings": settings}, status=200)
+        else:
+            return Response({"result": "null"}, status=200)
+    except Exception as e:
+        logging.exception("Error occurred while fetching user settings: %s", e)
+        return Response({"error": "Error fetching user settings."}, status=500)
 
 # Languages
 @api_view(['GET'])
@@ -144,14 +172,20 @@ def validate_jwt(request):
     try:
         decoded_token = jwt.decode(token, token_key, algorithms=['HS256'])
         logging.info(f"Decoded JWT: {decoded_token}")
-        # verify if user exists
-        user = users_collection.find_one({"_id": ObjectId(decoded_token['id']), "email": decoded_token['email']})
-        if not user:
-            return Response({"error": "Invalid token: User does not exist."}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response({"message": "Token is valid.", "decoded_token": decoded_token}, status=status.HTTP_200_OK)
 
-    except jwt.ExpiredSignatureError:
-         return Response({"error": "Token has expired."}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = decoded_token.get('user_id')
+        if not user_id:
+            return Response({"error": "Invalid token: User ID missing."}, status=400)
+        
+        # verify if user exists
+        user = users_collection.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            return Response({"error": "Invalid token: User does not exist."}, status=401)
+        return Response({"message": "Token is valid.", "decoded_token": decoded_token}, status=200)
     except jwt.InvalidTokenError as e:
         logging.error("Invalid token: %s", e)
-        return Response({"error": "Invalid token."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"error": "Invalid token."}, status=401)
+    except Exception as e:
+        logging.error(f"Unexpected error: {str(e)}")
+        return Response({"error": "An unexpected error occurred."}, status=500)
+    
