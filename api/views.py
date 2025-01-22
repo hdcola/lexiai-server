@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from pymongo import MongoClient
 import bcrypt
-import jwt 
+import jwt
+from .authentication import generate_jwt
 
 mongo_uri = os.getenv('MONGO_URI')
 db_name = os.getenv('DB_NAME')
@@ -24,25 +25,28 @@ styles_collection = db['styles']
 logging.basicConfig(level=logging.INFO)
 
 # user register
+
+
 @api_view(['POST'])
 def register_user(request):
     try:
         data = request.data
         # Find user by email
-        user = users_collection.find_one({ "email" : data['email']}) 
+        user = users_collection.find_one({"email": data['email']})
         if user:
             return Response({"message": "Email already exists."}, status=400)
 
         # Hash the password
-        hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(
+            data['password'].encode('utf-8'), bcrypt.gensalt())
 
         user_data = {
             'username': data['username'],
             'email': data['email'],
             'password': hashed_password.decode('utf-8'),
-            'createdAt': datetime.datetime.now(), 
+            'createdAt': datetime.datetime.now(),
         }
-        
+
         users_collection.insert_one(user_data)
         return Response({'message': 'User registered successfully'})
     except Exception as e:
@@ -50,6 +54,8 @@ def register_user(request):
         return Response({"error": "Error during the registration"}, status=500)
 
 # user log in
+
+
 @api_view(['POST'])
 def login_user(request):
     try:
@@ -58,22 +64,18 @@ def login_user(request):
         # check if email and password are present
         if not data.get('email') or not data.get('password'):
             return Response({"message": "Email and password are required."}, status=400)
-    
+
         # Find user by email
-        logged_user  = users_collection.find_one({ "email" : data['email']})        
+        logged_user = users_collection.find_one({"email": data['email']})
         if logged_user:
-             # verify the password
+            # verify the password
             if bcrypt.checkpw(data['password'].encode('utf-8'), logged_user['password'].encode('utf-8')):
                 # convert ObjectId to string
                 logged_user['_id'] = str(logged_user['_id'])
-                del logged_user['password']  # remove password from the response
+                # remove password from the response
+                del logged_user['password']
 
-                payload = {
-                    'email': logged_user['email'],
-                    'id': str(logged_user['_id']),  # convert ObjectId to string                    
-                    'exp': datetime.datetime.now() + datetime.timedelta(days=1),  # 1-day expiration
-                }
-                access_token = jwt.encode(payload, token_key, algorithm='HS256')
+                access_token = generate_jwt(logged_user)
 
                 return Response({
                     "message": "Login successful",
@@ -90,7 +92,6 @@ def login_user(request):
     except Exception as e:
         logging.exception("Error occurred during login: %s", e)
         return Response({"error": "Error logging in"}, status=500)
-    
 
 
 # Languages
@@ -108,7 +109,8 @@ def get_all_ai_styles(request):
         logging.info(styles)
         return Response(parse_json(styles))
     except Exception as e:
-        logging.exception(e) # automatically takes care of getting the traceback for the current exception and logging
+        # automatically takes care of getting the traceback for the current exception and logging
+        logging.exception(e)
         return Response({"error": "Failed to fetch styles"}, status=500)
 
 
@@ -117,17 +119,20 @@ def get_all_ai_styles(request):
 def get_topics_for_level(request):
     level = request.GET.get('level')
     try:
-        topics = topics_collection.find({ "level": level })
+        topics = topics_collection.find({"level": level})
         topics_list = list(topics)
         if not topics_list:
             return Response({"message": "No topics found for the specified level."}, status=404)
 
         return Response(parse_json(topics_list))
     except Exception as e:
-        logging.exception("Error fetching topics for language and level: %s", e)
+        logging.exception(
+            "Error fetching topics for language and level: %s", e)
         return Response({"message": "An error occurred while fetching topics."}, status=500)
 
 # helper function to parse JSON
+
+
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
@@ -145,13 +150,14 @@ def validate_jwt(request):
         decoded_token = jwt.decode(token, token_key, algorithms=['HS256'])
         logging.info(f"Decoded JWT: {decoded_token}")
         # verify if user exists
-        user = users_collection.find_one({"_id": ObjectId(decoded_token['id']), "email": decoded_token['email']})
+        user = users_collection.find_one(
+            {"_id": ObjectId(decoded_token['id']), "email": decoded_token['email']})
         if not user:
             return Response({"error": "Invalid token: User does not exist."}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({"message": "Token is valid.", "decoded_token": decoded_token}, status=status.HTTP_200_OK)
 
     except jwt.ExpiredSignatureError:
-         return Response({"error": "Token has expired."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"error": "Token has expired."}, status=status.HTTP_401_UNAUTHORIZED)
     except jwt.InvalidTokenError as e:
         logging.error("Invalid token: %s", e)
         return Response({"error": "Invalid token."}, status=status.HTTP_401_UNAUTHORIZED)
