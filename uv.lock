@@ -41,15 +41,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dataclasses"
-version = "0.8"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1f/12/7919c5d8b9c497f9180db15ea8ead6499812ea8264a6ae18766d93c59fe5/dataclasses-0.8.tar.gz", hash = "sha256:8479067f342acf957dc82ec415d355ab5edb7e7646b90dc6e2fd1d96ad084c97", size = 36581 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fe/ca/75fac5856ab5cfa51bbbcefa250182e50441074fdc3f803f6e76451fab43/dataclasses-0.8-py3-none-any.whl", hash = "sha256:0201d89fa866f68c8ebd9d08ee6ff50c0b255f8ec63a71c16fda7af82bb887bf", size = 19041 },
-]
-
-[[package]]
 name = "django"
 version = "5.1.5"
 source = { registry = "https://pypi.org/simple" }
@@ -89,21 +80,6 @@ wheels = [
 ]
 
 [[package]]
-name = "djongo"
-version = "1.2.31"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "dataclasses" },
-    { name = "django" },
-    { name = "pymongo" },
-    { name = "sqlparse" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6c/7d/cf3a41f19d0b420d44781ef37da65b02f45c445e2686b4db4724abffbcbd/djongo-1.2.31.tar.gz", hash = "sha256:4479bf78e5a6aba0632006e7b3d691f448b46c98b30e68be7a282d0204191513", size = 40510 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/28/a7/f68b9b6cb4e300705f002a69ab593de6406370caf282ba94cf7c51fddc21/djongo-1.2.31-py3-none-any.whl", hash = "sha256:63d4637500d2c9f066a84ac1a29bfa5f0d7a0b453c577b34d6fb4690ff101dc5", size = 44238 },
-]
-
-[[package]]
 name = "dnspython"
 version = "2.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -133,7 +109,6 @@ dependencies = [
     { name = "django" },
     { name = "django-cors-headers" },
     { name = "djangorestframework" },
-    { name = "djongo" },
     { name = "dnspython" },
     { name = "gunicorn" },
     { name = "pyjwt" },
@@ -152,7 +127,6 @@ requires-dist = [
     { name = "django", specifier = ">=5.1.5" },
     { name = "django-cors-headers", specifier = ">=4.6.0" },
     { name = "djangorestframework", specifier = ">=3.15.2" },
-    { name = "djongo", specifier = ">=1.2.31" },
     { name = "dnspython", specifier = ">=2.7.0" },
     { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "pyjwt", specifier = ">=2.10.1" },
