@@ -98,6 +98,21 @@ def get_all_languages(request):
     languages = languages_collection.find({})
     return Response(parse_json(languages))
 
+# Language by id
+
+
+@api_view(['GET'])
+def get_language_by_id(request, id: str):
+    try:
+        language = languages_collection.find_one({"_id": ObjectId(id)})
+        if not language:
+            return Response({"error": f"Language with id {id} not found."}, status=404)
+
+        return Response(parse_json(language), status=200)
+    except Exception as e:
+        logging.exception("Error fetching language by id: %s", e)
+        return Response({"error": "Failed to fetch language with id: ${id}"}, status=500)
+
 
 # get all AI styles
 @api_view(['GET'])
@@ -110,6 +125,38 @@ def get_all_ai_styles(request):
         # automatically takes care of getting the traceback for the current exception and logging
         logging.exception(e)
         return Response({"error": "Failed to fetch styles"}, status=500)
+
+
+# style by id
+@api_view(['GET'])
+def get_ai_style_by_id(request, id: str):
+    try:
+        style = styles_collection.find_one({"_id": ObjectId(id)})
+        if not style:
+            return Response({"error": f"style with id {id} not found."}, status=404)
+
+        return Response(parse_json(style), status=200)
+    except Exception as e:
+        logging.exception("Error fetching style by id: %s", e)
+        return Response({"error": "Failed to fetch style with id: ${id}"}, status=500)
+
+# get topics for language and level
+
+
+@api_view(['GET'])
+def get_topics_for_level(request):
+    level = request.GET.get('level')
+    try:
+        topics = topics_collection.find({"level": level})
+        topics_list = list(topics)
+        if not topics_list:
+            return Response({"message": "No topics found for the specified level."}, status=404)
+
+        return Response(parse_json(topics_list))
+    except Exception as e:
+        logging.exception(
+            "Error fetching topics for language and level: %s", e)
+        return Response({"message": "An error occurred while fetching topics."}, status=500)
 
 # helper function to parse JSON
 
