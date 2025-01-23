@@ -92,13 +92,24 @@ def login_user(request):
         return Response({"error": "Error logging in"}, status=500)
 
 # Languages
-
-
 @api_view(['GET'])
 def get_all_languages(request):
     languages = languages_collection.find({})
     return Response(parse_json(languages))
 
+# Language by id
+@api_view(['GET'])
+def get_language_by_id(request, id: str):
+    try:
+        language = languages_collection.find_one({"_id": ObjectId(id)})  
+        if not language:
+            return Response({"error": f"Language with id {id} not found."}, status=404)
+        
+        return Response(parse_json(language), status=200)
+    except Exception as e:
+        logging.exception("Error fetching language by id: %s", e) 
+        return Response({"error": "Failed to fetch language with id: ${id}"}, status=500)
+    
 
 # get all AI styles
 @api_view(['GET'])

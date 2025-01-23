@@ -29,7 +29,12 @@ GET {{host}}/api/styles HTTP/1.1
 ### get all languages
 GET {{host}}/api/languages HTTP/1.1
 
-### get all topics for specific language and level
+
+@language_id=6785965186ea7bd211eb2f9f
+### get language by id
+GET {{host}}/api/languages/{{language_id}} HTTP/1.1
+
+### get all topics for level
 GET {{host}}/api/topics?level=Beginner HTTP/1.1
 
 

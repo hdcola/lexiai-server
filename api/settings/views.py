@@ -64,7 +64,13 @@ class SettingsView(APIView):
             if not user:
                 return Response({"error": "Invalid token: User does not exist."}, status=401)
 
+            # If settings is not present, initialize it
+            settings = user.get('settings', {})
+            if 'settings' not in user:
+                user['settings'] = {}  # initialize empty settings 
+
             settings_data = request.data.get('settings', {})
+
             user['settings'].update(settings_data)
             users_collection.update_one(
                 {"_id": ObjectId(user_id)},
