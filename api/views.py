@@ -1,5 +1,4 @@
 import logging
-import os
 import json
 from bson import ObjectId, json_util
 import datetime
@@ -111,23 +110,6 @@ def get_all_ai_styles(request):
         # automatically takes care of getting the traceback for the current exception and logging
         logging.exception(e)
         return Response({"error": "Failed to fetch styles"}, status=500)
-
-
-# get topics for language and level
-@api_view(['GET'])
-def get_topics_for_level(request):
-    level = request.GET.get('level')
-    try:
-        topics = topics_collection.find({"level": level})
-        topics_list = list(topics)
-        if not topics_list:
-            return Response({"message": "No topics found for the specified level."}, status=404)
-
-        return Response(parse_json(topics_list))
-    except Exception as e:
-        logging.exception(
-            "Error fetching topics for language and level: %s", e)
-        return Response({"message": "An error occurred while fetching topics."}, status=500)
 
 # helper function to parse JSON
 
