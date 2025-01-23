@@ -9,13 +9,11 @@ from rest_framework import status
 from pymongo import MongoClient
 import bcrypt
 import jwt
+from django.conf import settings
+from .authentication import generate_jwt
 
-mongo_uri = os.getenv('MONGO_URI')
-db_name = os.getenv('DB_NAME')
-token_key = os.getenv('TOKEN_KEY')
-
-client = MongoClient(mongo_uri)
-db = client[db_name]
+client = MongoClient(settings.MONGO_URI)
+db = client[settings.DB_NAME]
 users_collection = db['users']
 languages_collection = db['languages']
 topics_collection = db['topics']
@@ -75,14 +73,7 @@ def login_user(request):
                 del logged_user['password']
                 logged_user['_id'] = str(logged_user['_id'])
 
-                payload = {
-                    # convert ObjectId to string
-                    'user_id': logged_user['_id'],
-                    'username': logged_user['username'],
-                    'email': logged_user['email'],
-                }
-                access_token = jwt.encode(
-                    payload, token_key, algorithm='HS256')
+                access_token = generate_jwt(logged_user)
 
                 return Response({
                     "message": "Login successful",
@@ -166,7 +157,8 @@ def validate_jwt(request):
     token = auth_header.split(" ")[1]
 
     try:
-        decoded_token = jwt.decode(token, token_key, algorithms=['HS256'])
+        decoded_token = jwt.decode(
+            token, settings.TOKEN_KEY, algorithms=['HS256'])
         logging.info(f"Decoded JWT: {decoded_token}")
 
         user_id = decoded_token.get('user_id')
@@ -177,7 +169,7 @@ def validate_jwt(request):
         user = users_collection.find_one({"_id": ObjectId(user_id)})
         if not user:
             return Response({"error": "Invalid token: User does not exist."}, status=401)
-        
+
         del user['password']
         user['_id'] = str(user['_id'])
         return Response({"message": "Token is valid.", "user": user}, status=200)
