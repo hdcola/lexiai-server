@@ -12,11 +12,8 @@ import jwt
 from django.conf import settings
 from .authentication import generate_jwt
 
-mongo_uri = os.getenv('MONGO_URI')
-db_name = os.getenv('DB_NAME')
-
-client = MongoClient(mongo_uri)
-db = client[db_name]
+client = MongoClient(settings.MONGO_URI)
+db = client[settings.DB_NAME]
 users_collection = db['users']
 languages_collection = db['languages']
 topics_collection = db['topics']
