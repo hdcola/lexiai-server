@@ -72,9 +72,6 @@ class SettingsView(APIView):
 
             settings_data = request.data.get('settings', {})
 
-            if 'language_id' in settings_data:
-                user['settings']['language_id'] = settings_data['language_id']  # Update language_id
-
             user['settings'].update(settings_data)
             users_collection.update_one(
                 {"_id": ObjectId(user_id)},
