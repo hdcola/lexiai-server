@@ -34,7 +34,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
         try:
             payload = jwt.decode(token.split(
-                ' ')[1], settings.SECRET_KEY, algorithms=['HS256'])
+                ' ')[1], settings.TOKEN_KEY, algorithms=['HS256'])
             dbuser = users_collection.find_one(
                 {"_id": ObjectId(payload['user_id'])})
             del dbuser['password']
@@ -55,5 +55,5 @@ def generate_jwt(user):
         'user_id': str(user['_id']),
         'exp': datetime.now() + timedelta(days=1),  # 1-day expiration
     }
-    token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+    token = jwt.encode(payload, settings.TOKEN_KEY, algorithm='HS256')
     return token

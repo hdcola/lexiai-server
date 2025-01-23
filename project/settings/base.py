@@ -125,4 +125,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # updated just for testing purposes
 DATABASES = {}
 
-SECRET_KEY = os.getenv('TOKEN_KEY')
+TOKEN_KEY = os.getenv('TOKEN_KEY')
