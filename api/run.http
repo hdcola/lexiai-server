@@ -25,6 +25,10 @@ Content-Type: application/json
 ### get all AI styles
 GET {{host}}/api/styles HTTP/1.1
 
+@style_id=6785601479bc79eeab784ffe
+### get style by id
+GET {{host}}/api/styles/{{style_id}} HTTP/1.1
+
 
 ### get all languages
 GET {{host}}/api/languages HTTP/1.1
