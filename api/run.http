@@ -1,6 +1,6 @@
 @host=http://127.0.0.1:8000
 #@host=https://api.lexiai.hdcola.org
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhcnJ5QG1haWwuY29tIiwidXNlcm5hbWUiOiJoYXJyeSIsInVzZXJfaWQiOiI2NzhhNjY0MzlkOTY0NjllYzIyNGEwYWMiLCJleHAiOjE3Mzc3MjU4OTF9.cNDhgTPaxSgVwFevZfYhAc8IG5_bFOvwjf9wGh-PSW0
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFubmFAbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFubmEiLCJ1c2VyX2lkIjoiNjc4OThmZWVjZDY5OGNkZjg4Yzc4NWY4IiwiZXhwIjoxNzM3NzMzNjc1fQ.kJ9wl4RQiJ_eguBh1F_4DpE7E7gImfzG_7kCcJnOnCg
 
 ### register
 

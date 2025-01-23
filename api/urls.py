@@ -2,7 +2,8 @@ from django.urls import path
 
 from .settings.views import SettingsView
 from .favorites.views import FavoritesView
-from .views import register_user, login_user, update_user_profile, get_all_languages, get_language_by_id, get_topics_for_level, get_all_ai_styles, get_ai_style_by_id, validate_jwt
+from .users.views import register_user, login_user, update_user_profile
+from .views import get_all_languages, get_language_by_id, get_topics_for_level, get_all_ai_styles, get_ai_style_by_id, validate_jwt
 
 urlpatterns = [
     path('users/register', register_user, name='register_user'),
