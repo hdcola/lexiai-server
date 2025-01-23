@@ -124,6 +124,19 @@ def get_all_ai_styles(request):
         return Response({"error": "Failed to fetch styles"}, status=500)
 
 
+# style by id
+@api_view(['GET'])
+def get_ai_style_by_id(request, id: str):
+    try:
+        style = styles_collection.find_one({"_id": ObjectId(id)})  
+        if not style:
+            return Response({"error": f"style with id {id} not found."}, status=404)
+        
+        return Response(parse_json(style), status=200)
+    except Exception as e:
+        logging.exception("Error fetching style by id: %s", e) 
+        return Response({"error": "Failed to fetch style with id: ${id}"}, status=500)
+
 # get topics for language and level
 @api_view(['GET'])
 def get_topics_for_level(request):
