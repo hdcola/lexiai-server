@@ -1,5 +1,6 @@
 import json
 from bson import ObjectId, json_util
+from django.conf import settings
 from pymongo import MongoClient
 import os
 from rest_framework.views import APIView
@@ -8,11 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from ..authentication import JWTAuthentication
 
-mongo_uri = os.getenv('MONGO_URI')
-db_name = os.getenv('DB_NAME')
 
-client = MongoClient(mongo_uri)
-db = client[db_name]
+client = MongoClient(settings.MONGO_URI)
+db = client[settings.DB_NAME]
 users_collection = db['users']
 topics_collection = db['topics']
 
