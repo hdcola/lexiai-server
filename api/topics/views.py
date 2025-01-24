@@ -53,7 +53,7 @@ class TopicsView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get_all(self, request):
         level = request.query_params.get('level', None)
         query_user_id = request.query_params.get('user_id', None)
         token_user = request.user.user
@@ -86,19 +86,19 @@ class TopicsView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    # def get(self, request, topic_id):
-    #     if topic_id is None:
-    #         return self.get(request)
-    #     token_user = request.user.user
-    #     try:
-    #         if topic_id is None:
-    #             return Response({"error": "Topic ID not provided"}, status=400)
-    #         topic = topics_collection.find_one({"_id": ObjectId(topic_id)})
-    #         if not topic:
-    #             return Response({"error": "Topic not found"}, status=404)
-    #         return Response({"topic": parse_json(topic)}, status=200)
-    #     except Exception as e:
-    #         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, topic_id=None):
+        if topic_id is None:
+            return self.get_all(request)
+        token_user = request.user.user
+        try:
+            if topic_id is None:
+                return Response({"error": "Topic ID not provided"}, status=400)
+            topic = topics_collection.find_one({"_id": ObjectId(topic_id)})
+            if not topic:
+                return Response({"error": "Topic not found"}, status=404)
+            return Response({"topic": parse_json(topic)}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
         token_user = request.user.user

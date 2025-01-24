@@ -67,7 +67,6 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### get topic by id
-
 @topic_id=6792b5c54782aaaec8bfbddd
 GET {{host}}/api/topics/{{topic_id}} HTTP/1.1
 Content-Type: application/json
