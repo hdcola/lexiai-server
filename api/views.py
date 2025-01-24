@@ -20,76 +20,6 @@ styles_collection = db['styles']
 
 logging.basicConfig(level=logging.INFO)
 
-# user register
-
-
-@api_view(['POST'])
-def register_user(request):
-    try:
-        data = request.data
-        # Find user by email
-        user = users_collection.find_one({"email": data['email']})
-        if user:
-            return Response({"message": "Email already exists."}, status=400)
-
-        # Hash the password
-        hashed_password = bcrypt.hashpw(
-            data['password'].encode('utf-8'), bcrypt.gensalt())
-
-        user_data = {
-            'username': data['username'],
-            'email': data['email'],
-            'password': hashed_password.decode('utf-8'),
-            'createdAt': datetime.datetime.now(),
-        }
-
-        users_collection.insert_one(user_data)
-        return Response({'message': 'User registered successfully'})
-    except Exception as e:
-        logging.exception("Error occurred during registration: %s", e)
-        return Response({"error": "Error during the registration"}, status=500)
-
-# user log in
-
-
-@api_view(['POST'])
-def login_user(request):
-    try:
-        data = request.data
-
-        # check if email and password are present
-        if not data.get('email') or not data.get('password'):
-            return Response({"message": "Email and password are required."}, status=400)
-
-        # Find user by email
-        logged_user = users_collection.find_one({"email": data['email']})
-        if logged_user:
-            # verify the password
-            if bcrypt.checkpw(data['password'].encode('utf-8'), logged_user['password'].encode('utf-8')):
-                # convert ObjectId to string
-                logged_user['_id'] = str(logged_user['_id'])
-                # remove password from the response
-                del logged_user['password']
-                logged_user['_id'] = str(logged_user['_id'])
-
-                access_token = generate_jwt(logged_user)
-
-                return Response({
-                    "message": "Login successful",
-                    "accessToken": access_token,
-                    "user": logged_user,
-                }, status=200)
-            else:
-                return Response({"message": "Invalid credentials"}, status=401)
-        else:
-            return Response({
-                "message": "Invalid credentials"
-            }, status=401)
-
-    except Exception as e:
-        logging.exception("Error occurred during login: %s", e)
-        return Response({"error": "Error logging in"}, status=500)
-
 # Languages
 
 
@@ -159,8 +89,6 @@ def get_topics_for_level(request):
         return Response({"message": "An error occurred while fetching topics."}, status=500)
 
 # helper function to parse JSON
-
-
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
