@@ -34,16 +34,16 @@ GET {{host}}/api/styles/{{style_id}} HTTP/1.1
 GET {{host}}/api/languages HTTP/1.1
 
 
-@language_id=6785965186ea7bd211eb2f9f
 ### get language by id
+@language_id=6785965186ea7bd211eb2f9f
 GET {{host}}/api/languages/{{language_id}} HTTP/1.1
 
-### get all topics for level (admin and current user)
+### get all topics for level (admin)
 GET {{host}}/api/topics?level=Beginner HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### get all topics (admin and current user)
+### get all topics (admin)
 GET {{host}}/api/topics HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
