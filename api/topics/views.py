@@ -82,22 +82,23 @@ class TopicsView(APIView):
             topics = list(topics_collection.aggregate(
                 [matching] + pipeline))
 
-            return Response({"topics": parse_json(topics)}, status=200)
+            return Response(parse_json(topics), status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, topic_id):
-        token_user = request.user.user
-        user_id = ObjectId(token_user['_id'])
-        try:
-            if topic_id is None:
-                return Response({"error": "Topic ID not provided"}, status=400)
-            topic = topics_collection.find_one({"_id": ObjectId(topic_id)})
-            if not topic:
-                return Response({"error": "Topic not found"}, status=404)
-            return Response({"topic": parse_json(topic)}, status=200)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    # def get(self, request, topic_id):
+    #     if topic_id is None:
+    #         return self.get(request)
+    #     token_user = request.user.user
+    #     try:
+    #         if topic_id is None:
+    #             return Response({"error": "Topic ID not provided"}, status=400)
+    #         topic = topics_collection.find_one({"_id": ObjectId(topic_id)})
+    #         if not topic:
+    #             return Response({"error": "Topic not found"}, status=404)
+    #         return Response({"topic": parse_json(topic)}, status=200)
+    #     except Exception as e:
+    #         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
         token_user = request.user.user
