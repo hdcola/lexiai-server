@@ -127,3 +127,43 @@ def update_user_profile(request):
         logging.exception("Error occurred during updating user profile: %s", e)
         return Response({"error": "Error updating user profile"}, status=500)
 
+# change user password
+@api_view(['PATCH'])
+def change_user_password(request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return Response({"error": "Authorization header missing or invalid."}, status=400)
+
+    token = auth_header.split(" ")[1]
+      
+    try:
+        decoded_token = jwt.decode(
+            token, settings.TOKEN_KEY, algorithms=['HS256'])
+        logging.info(f"Decoded JWT: {decoded_token}")
+
+        user_id = decoded_token.get('user_id')
+        if not user_id:
+            return Response({"error": "Invalid token: User ID missing."}, status=400)
+        user = users_collection.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            return Response({"error": f"User with id {user_id} not found."}, status=404)
+        data = request.data
+        # Hash the password
+        hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        update_result = users_collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"password": hashed_password}}
+        )
+        if update_result.modified_count == 0:
+            return Response({"message": "No changes were made."}, status=200)
+        
+        # the updated user
+        updated_user = users_collection.find_one({"_id": ObjectId(user_id)})
+        del updated_user['password']  # remove password from the response
+        updated_user['_id'] = str(updated_user['_id'])
+
+        return Response(parse_json(updated_user), status=200)
+    except Exception as e:
+        logging.exception("Error occurred during updating user profile: %s", e)
+        return Response({"error": "Error updating user profile"}, status=500)
+
