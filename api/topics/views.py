@@ -68,14 +68,14 @@ class TopicsView(APIView):
             elif level is None:
                 matching = {
                     "$match": {
-                        "user_id": {"$in": [user_id, admin_id]}
+                        "user_id": {"$in": [admin_id]}
                     }
                 }
             else:
                 matching = {
                     "$match": {
                         "level": level,
-                        "user_id": {"$in": [user_id, admin_id]}
+                        "user_id": {"$in": [admin_id]}
                     }
                 }
 
@@ -89,7 +89,6 @@ class TopicsView(APIView):
     def get(self, request, topic_id=None):
         if topic_id is None:
             return self.get_all(request)
-        token_user = request.user.user
         try:
             if topic_id is None:
                 return Response({"error": "Topic ID not provided"}, status=400)
