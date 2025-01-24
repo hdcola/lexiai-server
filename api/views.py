@@ -1,5 +1,4 @@
 import logging
-import os
 import json
 from bson import ObjectId, json_util
 import datetime
@@ -22,24 +21,28 @@ styles_collection = db['styles']
 logging.basicConfig(level=logging.INFO)
 
 # Languages
+
+
 @api_view(['GET'])
 def get_all_languages(request):
     languages = languages_collection.find({})
     return Response(parse_json(languages))
 
 # Language by id
+
+
 @api_view(['GET'])
 def get_language_by_id(request, id: str):
     try:
-        language = languages_collection.find_one({"_id": ObjectId(id)})  
+        language = languages_collection.find_one({"_id": ObjectId(id)})
         if not language:
             return Response({"error": f"Language with id {id} not found."}, status=404)
-        
+
         return Response(parse_json(language), status=200)
     except Exception as e:
-        logging.exception("Error fetching language by id: %s", e) 
+        logging.exception("Error fetching language by id: %s", e)
         return Response({"error": "Failed to fetch language with id: ${id}"}, status=500)
-    
+
 
 # get all AI styles
 @api_view(['GET'])
@@ -58,16 +61,18 @@ def get_all_ai_styles(request):
 @api_view(['GET'])
 def get_ai_style_by_id(request, id: str):
     try:
-        style = styles_collection.find_one({"_id": ObjectId(id)})  
+        style = styles_collection.find_one({"_id": ObjectId(id)})
         if not style:
             return Response({"error": f"style with id {id} not found."}, status=404)
-        
+
         return Response(parse_json(style), status=200)
     except Exception as e:
-        logging.exception("Error fetching style by id: %s", e) 
+        logging.exception("Error fetching style by id: %s", e)
         return Response({"error": "Failed to fetch style with id: ${id}"}, status=500)
 
 # get topics for language and level
+
+
 @api_view(['GET'])
 def get_topics_for_level(request):
     level = request.GET.get('level')
