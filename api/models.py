@@ -2,11 +2,11 @@ import datetime
 
 
 class User:
-    def __init__(self, username, email, password, createdAt=None):
+    def __init__(self, username, email, password, created_at=None):
         self.username = username
         self.email = email
         self.password = password
-        self.createdAt = createdAt or datetime.datetime.now()
+        self.created_at = created_at or datetime.datetime.now()
 
 
 """ class Language:

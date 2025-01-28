@@ -39,7 +39,7 @@ def register_user(request):
             'username': data['username'],
             'email': data['email'],
             'password': hashed_password.decode('utf-8'),
-            'createdAt': datetime.datetime.now(),
+            'created_at': datetime.datetime.now(),
         }
 
         users_collection.insert_one(user_data)
@@ -75,7 +75,7 @@ def login_user(request):
 
                 return Response({
                     "message": "Login successful",
-                    "accessToken": access_token,
+                    "access_token": access_token,
                     "user": logged_user,
                 }, status=200)
             else:

@@ -47,7 +47,7 @@ class FavoritesView(APIView):
 
                     return Response(parse_json(topics), status=200)
 
-            return Response({}, status=200)
+            return Response([], status=200)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
