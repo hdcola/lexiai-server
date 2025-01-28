@@ -71,7 +71,7 @@ class TopicsView(APIView):
                         "user_id": {"$in": [admin_id]}
                     }
                 }
-            elif level == "Custom":
+            elif level == "custom":
                 matching = {
                     "$match": {
                         "user_id": {"$in": [user_id]}
