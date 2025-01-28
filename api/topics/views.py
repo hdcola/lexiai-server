@@ -38,9 +38,9 @@ pipeline = [
             "title": 1,
             "description": 1,
             "level": 1,
-            "systemPrompt": 1,
+            "system_prompt": 1,
             "start": 1,
-            "createdAt": 1,
+            "created_at": 1,
             "user_id": 1,
             "user_info.username": 1,
             "user_info.email": 1
@@ -113,10 +113,10 @@ class TopicsView(APIView):
             topic_data['user_id'] = user_id
             topic_data['title'] = topic_data.get('title', "")
             topic_data['description'] = topic_data.get('description', "")
-            topic_data['level'] = topic_data.get('level', "Beginner")
-            topic_data['systemPrompt'] = topic_data.get('systemPrompt', "")
+            topic_data['level'] = topic_data.get('level', "beginner")
+            topic_data['system_prompt'] = topic_data.get('system_prompt', "")
             topic_data['start'] = topic_data.get('start', "")
-            topic_data['createdAt'] = datetime.datetime.now().strftime(
+            topic_data['created_at'] = datetime.datetime.now().strftime(
                 '%Y-%m-%dT%H:%M:%SZ')
             topic_id = topics_collection.insert_one(topic_data).inserted_id
             topic = topics_collection.find_one({"_id": topic_id})
@@ -129,6 +129,7 @@ class TopicsView(APIView):
         user_id = ObjectId(token_user['_id'])
         try:
             topic_data = request.data
+            print("test", topic_data)
             if topic_id is None:
                 return Response({"error": "Topic ID not provided"}, status=400)
             topic = topics_collection.find_one({"_id": ObjectId(topic_id)})
