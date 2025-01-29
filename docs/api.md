@@ -578,4 +578,224 @@ Deletes a specific topic by its ID.
 }
 ```
 
+## User Settings
+
+### Get User Settings
+
+Retrieves the settings for the authenticated user.
+
+**Endpoint**: `GET /api/users/settings`
+
+**Request Headers**:
+- Authorization: Bearer {accessToken}
+- Content-Type: application/json
+
+**Success Response**:
+- Status Code: 200 OK
+```json
+{
+    "favorites": {
+        "678559ac79bc79eeab784fe9": true
+    },
+    "language_id": "67867c4768c21d7deb4a8200",
+    "style_id": "6785601479bc79eeab784ffd"
+}
+```
+
+**Response Fields**:
+- `favorites`: Map of favorite items where keys are item IDs and values are boolean
+- `language_id`: User's preferred language identifier
+- `style_id`: User's preferred communication style identifier
+
+**Error Response**:
+- Status Code: 401 Unauthorized
+```json
+{
+    "message": "Authentication required"
+}
+```
+
+## User Profile
+
+### Update User
+
+Updates the authenticated user's profile information.
+
+**Endpoint**: `PATCH /api/users/update`
+
+**Request Headers**:
+- Authorization: Bearer {accessToken}
+- Content-Type: application/json
+
+**Request Body**:
+```json
+{
+    "username": "harry1",
+    "email": "harry1@mail.com"
+}
+```
+
+**Field Descriptions**:
+- `username`: Optional. New username. Length: 3-20 characters. Alphanumeric characters only.
+- `email`: Optional. New email address. Must be a valid email format.
+
+**Success Response**:
+- Status Code: 200 OK
+```json
+{
+    "message": "User updated successfully",
+    "user": {
+        "_id": "67937e428f1a3daf58ec0cea",
+        "username": "harry1",
+        "email": "harry1@mail.com",
+        "createdAt": "2025-01-24T11:49:22.734000"
+    }
+}
+```
+
+**Error Response**:
+- Status Code: 401 Unauthorized
+```json
+{
+    "message": "Authentication required"
+}
+```
+- Status Code: 400 Bad Request
+```json
+{
+    "message": "Invalid user data"
+}
+```
+- Status Code: 409 Conflict
+```json
+{
+    "message": "Email already exists"
+}
+```
+
+### Update User Security
+
+Updates the authenticated user's password.
+
+**Endpoint**: `PATCH /api/users/security`
+
+**Request Headers**:
+- Authorization: Bearer {accessToken}
+- Content-Type: application/json
+
+**Request Body**:
+```json
+{
+    "password": "Aa123#a"
+}
+```
+
+**Field Descriptions**:
+- `password`: Required. New password. Minimum 6 characters, must contain at least one uppercase letter, one lowercase letter, one number and one special character.
+
+**Success Response**:
+- Status Code: 200 OK
+```json
+{
+    "message": "Password updated successfully"
+}
+```
+
+**Error Response**:
+- Status Code: 401 Unauthorized
+```json
+{
+    "message": "Authentication required"
+}
+```
+- Status Code: 400 Bad Request
+```json
+{
+    "message": "Invalid password format"
+}
+```
+
+## User Favorites
+
+### Get User Favorites
+
+Retrieves the favorite topics for the authenticated user.
+
+**Endpoint**: `GET /api/users/favorites`
+
+**Request Headers**:
+- Authorization: Bearer {accessToken}
+- Content-Type: application/json
+
+**Success Response**:
+- Status Code: 200 OK
+```json
+{
+    "favorites": {
+        "678559ac79bc79eeab784fe9": true,
+        "67855a2179bc79eeab784fef": true
+    }
+}
+```
+
+**Response Fields**:
+- `favorites`: Map of favorite topics where keys are topic IDs and values are boolean
+
+**Error Response**:
+- Status Code: 401 Unauthorized
+```json
+{
+    "message": "Authentication required"
+}
+```
+
+### Update User Favorites
+
+Updates the favorite topics for the authenticated user. Setting a value to `true` adds the topic to favorites, while `false` removes it.
+
+**Endpoint**: `PATCH /api/users/favorites`
+
+**Request Headers**:
+- Authorization: Bearer {accessToken}
+- Content-Type: application/json
+
+**Request Body**:
+```json
+{
+  "favorites": {
+    "6787e6958c00c6bd30315c84": true
+  }
+}
+```
+
+**Field Descriptions**:
+- `favorites`: Object containing topic ID keys and boolean values
+  - Key: Topic ID
+  - Value: `true` to add to favorites, `false` to remove from favorites
+
+**Success Response**:
+- Status Code: 200 OK
+```json
+{
+    "message": "Favorites updated successfully",
+    "favorites": {
+        "678559ac79bc79eeab784fe9": true,
+        "6787e6958c00c6bd30315c84": true
+    }
+}
+```
+
+**Error Response**:
+- Status Code: 401 Unauthorized
+```json
+{
+    "message": "Authentication required"
+}
+```
+- Status Code: 400 Bad Request
+```json
+{
+    "message": "Invalid favorites data"
+}
+```
 
