@@ -14,7 +14,8 @@ db = client[settings.DB_NAME]
 users_collection = db['users']
 topics_collection = db['topics']
 
-admin_id = ObjectId("678ea72a7baff5011c1a27cf")
+admin_id = ObjectId("67998a0fc4080bd358eaadf1")
+# admin_id = ObjectId("678ea72a7baff5011c1a27cf") # for testing 'danny' user
 # admin_id = ObjectId("67898feecd698cdf88c785f8") # for testing 'anna' user
 
 pipeline = [
