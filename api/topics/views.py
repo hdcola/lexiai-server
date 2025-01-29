@@ -46,6 +46,11 @@ pipeline = [
             "user_info.username": 1,
             "user_info.email": 1
         }
+    },
+    {
+        "$sort": {
+            "title": 1  # sort by title in ascending order
+        }
     }
 ]
 
